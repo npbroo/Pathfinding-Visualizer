@@ -15,7 +15,10 @@ window.onload = function() {
     btn.addEventListener("click", changeMode, false);
 
     btn = document.getElementById("vizbtn");
-    btn.addEventListener ("click", visualize, false);
+    btn.addEventListener("click", visualize, false);
+
+    btn = document.getElementById("diagonals");
+    btn.addEventListener("change", diagonals, false);
 
 }
 
@@ -42,45 +45,57 @@ function start() {
     if(game.visualize) {
         game.algorithm.initStepByStep();
     } else {
-        game.algorithm.start();
+        game.algorithm.runInstant();
     }
 }
 
 function reset() {
     game.on = false;
     game.algorithm.running = false;
+    game.updateTime(0);
     game.nodeH.reset();
     game.nodeH.init();
 }
 
 function visualize() {
-    let btn = document.getElementById("modebtn");
     let visBtn = document.getElementById("vizbtn");
     let mode = document.getElementById("mode2");
 
     if (visBtn.value=="s") {
-        console.log("instant");
         visBtn.value = "i";
         mode.innerHTML = 'Visualize: Instant';
-
         game.visualize = false;
-        if (btn.value=="play") {
-            start();
-        } else {
-            reset();
-        }
     }
     else {
-        console.log("step-by-step");
         visBtn.value = "s";
         mode.innerHTML = 'Visualize: Step-by-step';
-
         game.visualize = true;
-        if (btn.value=="play") {
-            start();
-        } else {
-            reset();
-        }
+    }
+
+    let btn = document.getElementById("modebtn");
+    if (btn.value=="play") {
+        start();
+    } else {
+        reset();
+    }
+}
+
+function diagonals(event){
+    
+
+    if (event.target.checked) {
+        game.diagonals = true;
+        console.log('diagonals true');
+    } else {
+        game.diagonals = false;
+        console.log('diagonals false');
+    }
+
+    let btn = document.getElementById("modebtn");
+    if (btn.value=="play") {
+        start();
+    } else {
+        reset();
     }
 }
 
@@ -98,9 +113,7 @@ function gameLoop(timestamp) {
         game.algorithm.continueStepbyStep();
     }
     
-
     requestAnimationFrame(gameLoop);
 }
-
 requestAnimationFrame(gameLoop);
 

@@ -9,6 +9,7 @@ export default class InputHandler {
         
         canvas.addEventListener('pointerdown', (event) => {
             //let wallIndex = null;
+
             let coords =this.calculateWorldCoords(event, canvas);
             this.worldCoords = coords;
             if(game.nodeH.start.at(coords)) {
@@ -30,6 +31,7 @@ export default class InputHandler {
                     game.grid.addWall(coords);
                 }
             } 
+            //for debugging
             let node = game.nodeH.nodeAt(coords);
             if (node != null) {
                 console.log(node);
@@ -52,20 +54,23 @@ export default class InputHandler {
                             this.activeNode.pos = coords;
                             game.nodeH.reset();
                             game.nodeH.init();
-                            if (game.on && !game.visualize) game.algorithm.start();
+                            if (game.on && !game.visualize) game.algorithm.runInstant();
                         } else if (this.activeNode === game.nodeH.end && !atStart) {
                             //move start
                             this.activeNode.pos = coords;
                             game.nodeH.reset(); 
                             game.nodeH.init();
-                            if (game.on && !game.visualize) game.algorithm.start();
+                            if (game.on && !game.visualize) game.algorithm.runInstant();
                         } else if (this.wallAddMode && !atEnd && !atStart) {
                             //add wall
+                            game.nodeH.reset();
+                            game.nodeH.init();
                             game.grid.addWall(coords);
                         }
                     } else if (this.wallEraseMode) {
                         //erase wall
                         game.nodeH.reset();
+                        game.nodeH.init();
                         game.grid.removeWall(coords);
                     }
                 }
@@ -83,7 +88,7 @@ export default class InputHandler {
                 } else {
                     game.nodeH.reset();
                     game.nodeH.init();
-                    game.algorithm.start();
+                    game.algorithm.runInstant();
                 }
             }
         });
@@ -96,7 +101,7 @@ export default class InputHandler {
                 game.on = true;
                 game.nodeH.reset();
                 game.nodeH.init();
-                game.algorithm.start();
+                game.algorithm.runInstant();
             }
             if(event.keyCode == 13) {
                 //reset the pathfinder and dont start

@@ -12,6 +12,7 @@ export default class Game {
         this.gridHeight = screenHeight/this.blockSize;
         this.on = false;
         this.visualize = false;
+        this.diagonals = true;
     }
 
     init(canvas) {
@@ -32,13 +33,21 @@ export default class Game {
         this.nodeH.drawNodes(ctx);
     }
 
-    updateTime(elapsed) {
+    updateTime(elapsed, state) {
         let div = document.getElementById("time");
+        let str = '';
         if(!this.visualize) {
-            div.innerHTML = 'Elapsed time: ' + elapsed + "(ms)";
+            str = 'Elapsed time: ' + elapsed + "(ms)";
         } else {
-            div.innerHTML = 'Elapsed time: n/a';
+            str = 'Elapsed time: n/a';
         }
-        
+        if (state == 0){
+            str += ' - SEARCHING';
+        } else if (state == 1) {
+            str += ' - SUCCESS';
+        } else if (state == 2){
+            str += ' - NO SOLUTION';
+        } 
+        div.innerHTML = str;
     }
 }

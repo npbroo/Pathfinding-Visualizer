@@ -7,20 +7,26 @@ export default class Astar {
 
     initStepByStep() {
         this.running = true;
+        this.game.updateTime(0,0);
     }
 
     continueStepbyStep() {
-        if(this.nodeH.open.length && this.running) {
-            //find node with the smallest f on the open list
-            let node = this.nodeH.popSmallestF();
-            //push the node to the closed list
-            this.nodeH.pushToClosed(node);
-            //generate successors
-            this.genChildren(node);
+        if(this.nodeH.open.length) {
+            if (this.running) {
+                //find node with the smallest f on the open list
+                let node = this.nodeH.popSmallestF();
+                //push the node to the closed list
+                this.nodeH.pushToClosed(node);
+                //generate successors
+                this.genChildren(node);
+            }
+        } else {
+            this.running = false;
+            this.game.updateTime(0, 2);
         }
     }
 
-    start() {
+    runInstant() {
         this.running = true;
         this.time = new Date().getTime();
         while(this.nodeH.open.length && this.running) {
@@ -31,6 +37,11 @@ export default class Astar {
             //generate successors
             this.genChildren(node);
         }
+        if(!this.nodeH.open.length) {
+            this.running = false;
+            let elapsed = new Date().getTime() - this.time;
+            this.game.updateTime(elapsed, 2);
+        }
     }
 
     genChildren(node) {
@@ -39,13 +50,20 @@ export default class Astar {
             south: {x: 0, y: 1, g: 1},
             east: {x: 1, y: 0, g: 1},
             west: {x: -1, y: 0, g: 1},
+        };
+        let vectorsDiag = {
             northeast: {x: 1, y: -1, g: 1.4},
             southwest: {x: -1, y: 1, g: 1.4},
             northwest: {x: -1, y: -1, g: 1.4},
             southeast: {x: 1, y: 1, g: 1.4},
-        };
+        }
         for(let dir in vectors) {
             this.genChild(node, vectors[dir]);
+        }
+        if(this.game.diagonals) {
+            for(let dir in vectorsDiag) {
+                this.genChild(node, vectorsDiag[dir]);
+            }
         }
     }
 
@@ -59,10 +77,12 @@ export default class Astar {
                 let nodeAtPos = this.nodeH.nodeAt(pos);
                 if (nodeAtPos == null) {
                     //check diagonal parity
-                    if (pos.x != node.pos.x && pos.y != node.pos.y) {
-                        if (this.game.grid.isWall({x: pos.x, y: node.pos.y}) && 
-                            this.game.grid.isWall({x: node.pos.x, y: pos.y})) {
-                          return;
+                    if (this.game.diagonals) {
+                        if (pos.x != node.pos.x && pos.y != node.pos.y) {
+                            if (this.game.grid.isWall({x: pos.x, y: node.pos.y}) && 
+                                this.game.grid.isWall({x: node.pos.x, y: pos.y})) {
+                            return;
+                            }
                         }
                     }
                     //calculate h heuristic (manhattan)
@@ -98,7 +118,7 @@ export default class Astar {
         }
         this.running = false;
         let elapsed = new Date().getTime() - this.time;
-        this.game.updateTime(elapsed);
+        this.game.updateTime(elapsed, 1);
         console.log('elapsed time: ' + elapsed/1000 + "(seconds)");
         console.log('elapsed time: ' + elapsed + "(ms)");
     }
