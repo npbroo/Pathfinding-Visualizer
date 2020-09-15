@@ -1,6 +1,5 @@
 import InputHandler from './input.js';
 import Grid from './grid.js'
-import Node from './node.js'
 import Astar from './algorithms/astar.js';
 import NodeHandler from './nodeHandler.js';
 

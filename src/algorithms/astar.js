@@ -1,5 +1,3 @@
-import Node from '../node.js'
-
 export default class Astar {
     constructor(game, startNode) {
         this.game = game;
