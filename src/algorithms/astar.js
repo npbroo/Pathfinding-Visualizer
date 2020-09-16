@@ -86,7 +86,8 @@ export default class Astar {
                         }
                     }
                     //calculate h heuristic (manhattan)
-                    let h = Math.abs(pos.x - this.nodeH.end.pos.x) + Math.abs(pos.y - this.nodeH.end.pos.y);
+                    let h = this.calculateH(pos);
+                    //= Math.abs(pos.x - this.nodeH.end.pos.x) + Math.abs(pos.y - this.nodeH.end.pos.y);
                     //add it to the open list
                     this.nodeH.addOpen(g, h, node, pos);
                     
@@ -106,6 +107,16 @@ export default class Astar {
                     return;
                 }
             }
+        }
+    }
+
+    calculateH(pos) {
+        if (this.game.heuristic == 'manhattan') {
+            return Math.abs(pos.x - this.nodeH.end.pos.x) + Math.abs(pos.y - this.nodeH.end.pos.y);
+        } else if (this.game.heuristic == 'diagonal') {
+            return Math.max(Math.abs(pos.x - this.nodeH.end.pos.x), Math.abs(pos.y - this.nodeH.end.pos.y));
+        } else if (this.game.heuristic == 'euclidean') {
+            return Math.sqrt(Math.pow(pos.x - this.nodeH.end.pos.x, 2) + Math.pow(pos.y - this.nodeH.end.pos.y, 2));
         }
     }
 

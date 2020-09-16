@@ -26,15 +26,39 @@
         <div>
             <div id='time'>Elapsed Time: n/a</div>
             <div>
+                <!--
                 <button class='btn' value='edit' id="modebtn" >change</button>
                 <div class='container' id='mode1'>Mode: Edit</div>
+                -->
+                <button class='play' value="pause" id="play" >Play</button>
+                <!--<button class='pause' id="pause" >Pause</button>-->
+                <button class='stop' id="stop" >Stop</button>
             </div>
             <div>
+                <!--
                 <button class='btn' value='i' id='vizbtn'>change</button>
-                <div class='container' id='mode2'>Visualize: Instant</div>
+                <div class='container' id='mode2'>Visualize: Instant</div>-->
+                Visualize:
+                <select id='visualize'>
+                    <option value='i'>Instant</option>
+                    <option value='s'>Step-by-Step</option>
+                </select>
             </div>
             <div>
-                <input type="checkbox" checked='true' id='diagonals'>Diagonal Movement?
+                <!--<input type="checkbox" checked='true' id='diagonals'>Diagonal Movement?-->
+                Diagonal:
+                <select id='diagonals'>
+                    <option value='yes'>Yes</option>
+                    <option value='no'>No</option>
+                </select>
+            </div>
+            <div>
+                Heuristic:
+                <select id='heuristic'>
+                    <option value='manhattan'>Manhattan</option>
+                    <option value='diagonal'>Diagonal</option>
+                    <option value='euclidian'>Euclidian</option>
+                </select>
             </div>
         </div>
     </body>

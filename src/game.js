@@ -13,6 +13,9 @@ export default class Game {
         this.on = false;
         this.visualize = false;
         this.diagonals = true;
+        this.heuristic = 'manhattan';
+        //this.heuristic = 'diagonal';
+        //this.heuristic = 'euclidean';
     }
 
     init(canvas) {

@@ -5,40 +5,54 @@ let ctx = canvas.getContext("2d");
 
 const SCREEN_WIDTH = 600;
 const SCREEN_HEIGHT = 600;
+var paused = true;
 
 //create and initialize game
 let game = new Game(SCREEN_WIDTH, SCREEN_HEIGHT);
 game.init(canvas);
 
 window.onload = function() {
-    let btn = document.getElementById("modebtn");
-    btn.addEventListener("click", changeMode, false);
 
-    btn = document.getElementById("vizbtn");
-    btn.addEventListener("click", visualize, false);
+    let btn = document.getElementById("play");
+    btn.addEventListener("click", play, false);
+
+    btn = document.getElementById("stop");
+    btn.addEventListener("click", stop, false);
+
+    btn = document.getElementById("visualize");
+    btn.addEventListener("change", visualize, false);
 
     btn = document.getElementById("diagonals");
     btn.addEventListener("change", diagonals, false);
 
+    btn = btn = document.getElementById("heuristic");
+    btn.addEventListener("change", heuristic, false);
 }
 
-function changeMode() {
-    let btn = document.getElementById("modebtn");
-    let mode = document.getElementById("mode1");
+function play(event) {
+    let btn = event.target;
     if (btn.value=="play") {
-        btn.value = "edit";
-        mode.innerHTML = 'Mode: Edit';
-        reset();
+        ///btn.value = "pause";
+        //btn.innerHTML = 'Play';
+        pause();
+    }
+    else if(game.visualize){
+        console.log("pause");
+        //btn.value = "play";
+        //btn.innerHTML = 'Pause';
+        if (paused && game.on) {
+            paused = false;
+        } else {
+            start();
+        }
     }
     else {
-        console.log("edit");
-        btn.value = "play";
-        mode.innerHTML = 'Mode: Play';
         start();
     }
 }
 
 function start() {
+    paused = false;
     game.nodeH.reset();
     game.nodeH.init();
     game.on = true;
@@ -49,7 +63,11 @@ function start() {
     }
 }
 
-function reset() {
+function stop() {
+    paused = true;
+    //let btn = document.getElementById("play");
+    //    btn.value = "pause";
+    //    btn.innerHTML = 'Play';
     game.on = false;
     game.algorithm.running = false;
     game.updateTime(0);
@@ -57,46 +75,57 @@ function reset() {
     game.nodeH.init();
 }
 
-function visualize() {
-    let visBtn = document.getElementById("vizbtn");
-    let mode = document.getElementById("mode2");
-
-    if (visBtn.value=="s") {
-        visBtn.value = "i";
-        mode.innerHTML = 'Visualize: Instant';
-        game.visualize = false;
-    }
-    else {
-        visBtn.value = "s";
-        mode.innerHTML = 'Visualize: Step-by-step';
-        game.visualize = true;
-    }
-
-    let btn = document.getElementById("modebtn");
+function toggle() {
+    console.log("toggle");
+    let btn = document.getElementById("play");
     if (btn.value=="play") {
         start();
     } else {
-        reset();
+        stop();
     }
 }
 
+function pause() {
+    paused = true;
+}
+
+function visualize(event) {
+    switch(event.target.value) {
+    case 's':
+        game.visualize = true;
+        break;
+    case 'i':
+        game.visualize = false;
+        break;
+    }
+    toggle();
+}
+
 function diagonals(event){
-    
-
-    if (event.target.checked) {
+   switch(event.target.value) {
+    case 'yes':
         game.diagonals = true;
-        console.log('diagonals true');
-    } else {
+        break;
+    case 'no':
         game.diagonals = false;
-        console.log('diagonals false');
+        break;
     }
+    toggle();
+}
 
-    let btn = document.getElementById("modebtn");
-    if (btn.value=="play") {
-        start();
-    } else {
-        reset();
+function heuristic(event) {
+    switch(event.target.value) {
+        case 'manhattan':
+            game.heuristic = 'manhattan';
+            break;
+        case 'diagonal':
+            game.heuristic = 'diagonal';
+            break;
+        case 'euclidian':
+            game.heuristic = 'euclidian';
+            break;
     }
+    toggle();
 }
 
 
@@ -105,12 +134,25 @@ function gameLoop(timestamp) {
     let deltaTime = timestamp - lastTime;
     lastTime = timestamp;
     ctx.clearRect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
+    let btn = document.getElementById("play");
 
     //main game loop
     game.draw(ctx);
 
     if(game.visualize && game.algorithm.running) {
-        game.algorithm.continueStepbyStep();
+        if(!paused) {
+            btn.value = "play";
+            btn.innerHTML = 'Pause';
+            game.algorithm.continueStepbyStep();
+
+        } else {
+            btn.value = "pause";
+            btn.innerHTML = 'Play';
+        }
+    } else if (!game.algorithm.running) {
+        
+        btn.value = "pause";
+        btn.innerHTML = 'Play';
     }
     
     requestAnimationFrame(gameLoop);
