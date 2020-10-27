@@ -1,5 +1,5 @@
 export default class Astar {
-    constructor(game, startNode) {
+    constructor(game) {
         this.game = game;
         this.nodeH = game.nodeH;
         this.running = false;
@@ -87,7 +87,6 @@ export default class Astar {
                     }
                     //calculate h heuristic (manhattan)
                     let h = this.calculateH(pos);
-                    //= Math.abs(pos.x - this.nodeH.end.pos.x) + Math.abs(pos.y - this.nodeH.end.pos.y);
                     //add it to the open list
                     this.nodeH.addOpen(g, h, node, pos);
                     

@@ -14,8 +14,6 @@ export default class Game {
         this.visualize = false;
         this.diagonals = true;
         this.heuristic = 'manhattan';
-        //this.heuristic = 'diagonal';
-        //this.heuristic = 'euclidean';
     }
 
     init(canvas) {
@@ -26,9 +24,9 @@ export default class Game {
         this.nodeH = new NodeHandler(this, startPos, endPos);
         this.nodeH.init();
 
-        this.algorithm = new Astar(this, this.start);
+        this.algorithm = new Astar(this);
         new InputHandler(this, canvas);
-
+        
     }
 
     draw(ctx) {
@@ -40,17 +38,25 @@ export default class Game {
         let div = document.getElementById("time");
         let str = '';
         if(!this.visualize) {
-            str = 'Elapsed time: ' + elapsed + "(ms)";
+            str = ": " + elapsed + "ms";
         } else {
-            str = 'Elapsed time: n/a';
+            str = ': n/a';
         }
+        div.innerHTML = str;
+
+        div = document.getElementById("status");
+        str = '&nbsp;';
         if (state == 0){
-            str += ' - SEARCHING';
+            str += '(SEARCHING)';
+            div.style.color = 'black';
         } else if (state == 1) {
-            str += ' - SUCCESS';
+            str += '(SUCCESS)';
+            div.style.color = 'green';
         } else if (state == 2){
-            str += ' - NO SOLUTION';
+            str += '(NO SOLUTION)';
+            div.style.color = 'red';
         } 
         div.innerHTML = str;
+        
     }
 }

@@ -3,8 +3,8 @@ import Game from './game.js'
 let canvas = document.getElementById("game");
 let ctx = canvas.getContext("2d");
 
-const SCREEN_WIDTH = 600;
-const SCREEN_HEIGHT = 600;
+const SCREEN_WIDTH = 560;
+const SCREEN_HEIGHT = 560;
 var paused = true;
 
 //create and initialize game
@@ -32,14 +32,10 @@ window.onload = function() {
 function play(event) {
     let btn = event.target;
     if (btn.value=="play") {
-        ///btn.value = "pause";
-        //btn.innerHTML = 'Play';
         pause();
     }
     else if(game.visualize){
         console.log("pause");
-        //btn.value = "play";
-        //btn.innerHTML = 'Pause';
         if (paused && game.on) {
             paused = false;
         } else {
@@ -65,9 +61,6 @@ function start() {
 
 function stop() {
     paused = true;
-    //let btn = document.getElementById("play");
-    //    btn.value = "pause";
-    //    btn.innerHTML = 'Play';
     game.on = false;
     game.algorithm.running = false;
     game.updateTime(0);
@@ -131,7 +124,6 @@ function heuristic(event) {
 
 let lastTime = 0;
 function gameLoop(timestamp) {
-    let deltaTime = timestamp - lastTime;
     lastTime = timestamp;
     ctx.clearRect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
     let btn = document.getElementById("play");
@@ -144,13 +136,11 @@ function gameLoop(timestamp) {
             btn.value = "play";
             btn.innerHTML = 'Pause';
             game.algorithm.continueStepbyStep();
-
         } else {
             btn.value = "pause";
             btn.innerHTML = 'Play';
         }
     } else if (!game.algorithm.running) {
-        
         btn.value = "pause";
         btn.innerHTML = 'Play';
     }
